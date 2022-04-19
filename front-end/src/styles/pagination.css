@@ -1,0 +1,17 @@
+nav ul{
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+nav ul li{
+    margin-right: 10px;
+}
+nav ul li a.page-link{
+    color: #5acba1;
+}
+nav ul li a.page-link:hover{
+    background-color: #5acba1;
+    color: #fff;
+}

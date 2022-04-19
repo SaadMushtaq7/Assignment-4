@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+.home-page-list-container {
+    display: flex;
+    justify-content: center;   
+    flex-direction: column;
+    height: fit-content;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+.home-page-list-container .fa-circle-plus{
+    font-size: 50px;
+    color: #5acba1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.home-page-list-container .fa-circle-plus:hover{
+    font-size: 55px;
+}
+
+.home-page-list-container table thead{
+    background-color: #DEF5EC;
+    font-size: 13px;
+}
+.home-page-list-container table input.checkbox-size{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 17px;
+    height: 17px;
+}
+.home-page-list-container table thead th,
+.home-page-list-container table tbody td{
+    cursor: pointer;
+}
+.home-page-list-container table tbody td.actionIcon{
+    display: flex;
+    flex-direction: row;
+}
+.home-page-list-container table thead th i,
+.home-page-list-container table tbody td i{
+    color: #5acba1;
+    font-size: 15px;
+    margin-right: 10px;
+}
+.home-page-list-container table tbody tr{
+    transition: all 0.3s;
+}
+.home-page-list-container table tbody tr:hover
+{
+    background-color: rgba(90,203,161,0.4) !important;
+    color: black !important;
+}
+.home-page-list-container table tbody tr td.user-img img{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin: 0;
+    padding: 0;
+}
+  

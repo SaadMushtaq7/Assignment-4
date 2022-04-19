@@ -1,0 +1,156 @@
+.container{
+    margin-right: 0px;
+    margin-left: 200px;
+}
+.users-gist-container{
+    display: flex;
+    flex-direction: column;
+}
+.users-gist-container .user-and-files{
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+}
+.users-gist-container .user-and-files .user{
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    margin-top: 6%;
+    width: fit-content;
+    
+}
+.users-gist-container .user-and-files .user img{
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+}
+.users-gist-container .user-and-files .user h4{
+    margin-top: 10px;
+    font-weight: lighter;
+    margin-left: 20px;
+    width: fit-content;
+}
+.users-gist-container .user-and-files .user .btn{
+    color: #1D80FF;
+    margin-left: 15px;
+    width: fit-content;
+}
+
+.users-gist-container .user-and-files .files{
+    margin-top: 5%;
+    border-left: 1px solid #CCCCCC;
+    display: flex;
+    flex-direction: column;
+}
+.user-and-files .file .single-files{
+    margin-top: 100px;
+}
+.users-gist-container .user-and-files .files .user-gist-page-header{
+    display: flex;
+    flex-direction: row;
+    margin-left: 5%;
+    margin-top: 2%;
+    
+}
+.files .user-gist-page-header .user-gist-page-user{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.files .user-gist-page-header .user-gist-page-user img{
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    margin: 0;
+    padding: 0;
+    margin-right: 8px;
+}
+
+.files .user-gist-page-header .user-gist-page-user .card-body{
+    padding: 0;
+    margin: 0;
+}
+.files .user-gist-page-header .user-gist-page-user .card-body .card-title{
+    color: #7AB4FF;
+    font-size: 17px;
+    margin: 0;
+    padding: 0;
+}
+.files .user-gist-page-header .user-gist-page-user .card-body .card-filename{
+    font-weight: bolder;
+    margin: 0;
+    padding: 0;
+    
+}
+.files .gist-page-header .gist-page-user .card-body p{
+    color: #CCCCCC;
+    margin: 0;
+    padding: 0;
+}
+.files .user-gist-page-header .user-gist-page-user .card-body .card-time{
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+.files .user-gist-page-header .user-gist-page-user .card-body .card-source{
+    font-size: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+
+.files .user-gist-page-header .user-gist-page-action{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2%;
+    margin-left: 15%;
+    color: #7AB4FF;
+}
+
+.files .user-gist-page-header .user-gist-page-action div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    margin-left: 10px;
+    color: #1D80FF;
+}
+
+.files .user-gist-page-header .user-gist-page-action div i{
+    font-size: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #1D80FF;
+}
+.user-gist-page-header .user-gist-page-action .action{
+    cursor: pointer;
+}
+
+.user-gist-page-header .user-gist-page-action div span{
+    width: 30px;
+    height: 25px;
+    margin: 0px 5px;
+    padding-top: 2px;
+    border-radius: 8px;
+    border: 1px solid #CCCCCC;
+    text-align: center;
+}
+
+.files .body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.files .body textarea{
+    box-shadow: rgba(0, 0, 0, 0.29) 0px 3px 8px;
+    margin-left: 5px;
+  
+}

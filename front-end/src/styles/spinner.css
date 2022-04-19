@@ -1,0 +1,16 @@
+.spinner-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+    
+}
+.spinner-container img{
+    background-color: transparent;
+    margin-top: 50px;
+}
+.spinner-container h2{
+    text-align: center;
+    margin-top: 150px;
+    color: #5acba1;
+}
