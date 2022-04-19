@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-//import useSWR from "swr";
-//import { getUserFiles } from "../ApiCalls";
 import {
   userSetFiles,
   userSetRawData,

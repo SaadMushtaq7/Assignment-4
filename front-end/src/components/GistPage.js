@@ -23,6 +23,7 @@ export default function GistPage() {
   };
   useEffect(() => {
     fetchFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

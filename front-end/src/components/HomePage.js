@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
-/*import useSWR from "swr";
-import { fetchFilesPublic } from "../ApiCalls";*/
 import { setFiles } from "../redux/actions/filesActions";
 import NavBar from "./NavBar";
 import HomePageGrid from "./HomePageGrid";
@@ -14,9 +12,7 @@ import "../styles/home-page.css";
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
-  /*  const { data, error } = useSWR("https://api.github.com/gists", fetcher);
-  console.log(data);
-*/
+
   //states
   const [mode, setMode] = useState(false);
   const [user, setUser] = useState(null);
@@ -81,6 +77,7 @@ export default function HomePage() {
     return () => {
       setSearchedData(files);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files.length]);
 
   return (

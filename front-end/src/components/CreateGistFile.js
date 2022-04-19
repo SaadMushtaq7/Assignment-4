@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation /*, useNavigate*/ } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import NavBar from "./NavBar";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,7 +20,7 @@ export default function CreateGistFile() {
       const fileData = {};
       fileData["content"] = fileContent;
       file[fileName] = fileData;
-      console.log(file);
+
       axios
         .post(
           "https://api.github.com/gists",
@@ -43,10 +43,6 @@ export default function CreateGistFile() {
           console.log(`Error adding data: ${error}`);
           toast.error("Failed to save data!");
         });
-
-      /*setTimeout(() => {
-        navigate("/");
-      }, 6000);*/
     } else {
       toast.error("Form not completely filled!");
     }

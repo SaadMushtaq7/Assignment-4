@@ -16,7 +16,7 @@ export default function EditGistFile() {
   const [desc, setDesc] = useState(file.description);
   const [fileName, setFileName] = useState(Object.keys(file.files)[0]);
   const [fileContent, setFileContent] = useState("");
-  console.log(file);
+
   const dispatch = useDispatch();
   const handleUpdate = () => {
     const tempFile = {};
@@ -35,7 +35,6 @@ export default function EditGistFile() {
         }
       )
       .then((res) => {
-        console.log(res.data);
         dispatch(userEditFile(res.data));
       })
       .catch((err) => {
@@ -54,6 +53,7 @@ export default function EditGistFile() {
         setFileContent(res.data);
       })
       .catch((err) => console.log(`Error fetching data: ${err}`));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
