@@ -13,14 +13,12 @@ export default function CreateGistFile() {
   const [fileName, setFileName] = useState("");
   const [fileContent, setFileContent] = useState("");
 
-  const gitPAT = `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`;
   const createGist = () => {
     if (desc !== "" && fileName !== "" && fileContent !== "") {
       const file = {};
       const fileData = {};
       fileData["content"] = fileContent;
       file[fileName] = fileData;
-
       axios
         .post(
           "https://api.github.com/gists",
@@ -28,7 +26,7 @@ export default function CreateGistFile() {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${gitPAT}`,
+              Authorization: `Bearer ${process.env.REACT_APP_GIT_PAK}`,
             },
           }
         )

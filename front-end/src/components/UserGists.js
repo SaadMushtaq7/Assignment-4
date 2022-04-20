@@ -15,7 +15,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function UserGists() {
   const [deleteCheck, setDeleteCheck] = useState(false);
-  const gitPAT = `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`;
   const location = useLocation();
   const user = location.state;
 
@@ -51,7 +50,7 @@ export default function UserGists() {
       .get(`https://api.github.com/gists`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${gitPAT}`,
+          Authorization: `Bearer ${process.env.REACT_APP_GIT_PAK}`,
         },
       })
       .then((res) => {
@@ -71,7 +70,7 @@ export default function UserGists() {
       .delete(`https://api.github.com/gists/${file.id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${gitPAT}`,
+          Authorization: `Bearer ${process.env.REACT_APP_GIT_PAK}`,
         },
       })
       .then((res) => {

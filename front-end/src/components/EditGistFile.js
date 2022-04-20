@@ -8,7 +8,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function EditGistFile() {
-  const gitPAT = `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`;
   const location = useLocation();
   const stateData = location.state;
   const user = stateData[1];
@@ -30,7 +29,7 @@ export default function EditGistFile() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${gitPAT}`,
+            Authorization: `Bearer ${process.env.REACT_APP_GIT_PAK}`,
           },
         }
       )

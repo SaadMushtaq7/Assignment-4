@@ -10,6 +10,7 @@ export default function Spinner() {
         setTimer(false);
       }, [10000]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
