@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/pagination.css";
+
 export default function Pagination({ filesPerPage, totalFiles, paginate }) {
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalFiles / filesPerPage); i++) {

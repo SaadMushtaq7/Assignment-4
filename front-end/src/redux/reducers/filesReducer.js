@@ -17,14 +17,12 @@ export const userFilesReducer = (state = [], { type, payload }) => {
     case ActionTypes.USER_SET_FILES:
       return { ...state, files: payload };
     case ActionTypes.USER_DELETE_FILE: {
-      console.log(state.files);
       const fileFilter = state.files.filter((file) => file.id !== payload.id);
       state.files = fileFilter;
-      console.log(state.files);
+
       return state;
     }
     case ActionTypes.USER_EDIT_FILE: {
-      console.log(payload);
       const fileUpdate = state.files.filter((file) =>
         file.id === payload.id ? Object.assign(file, payload) : file
       );

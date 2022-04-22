@@ -1,48 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { Link, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import NavBar from "./NavBar";
+import Spinner from "./Spinner";
 import {
   userSetFiles,
   userSetRawData,
   userDeleteFile,
 } from "../redux/actions/filesActions";
-import NavBar from "./NavBar";
-import Spinner from "./Spinner";
-import "../styles/user-gist.css";
-import { Link, useLocation } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../styles/user-gist.css";
 
 export default function UserGists() {
-  const [deleteCheck, setDeleteCheck] = useState(false);
   const location = useLocation();
-  const user = location.state;
+  const { user } = location.state;
+
+  const [deleteCheck, setDeleteCheck] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState(null);
+  const [rawError, setRawError] = useState(null);
 
   const dispatch = useDispatch();
 
-  const files = useSelector((state) =>
-    state.alluserfiles.files ? state.alluserfiles.files : []
-  );
-  const rawFiles = useSelector((state) =>
-    state.allrawfiles.payload ? state.allrawfiles.payload : []
-  );
-  const fetchRawData = async () => {
+  const files = useSelector((state) => state.alluserfiles.files || []);
+  const rawFiles = useSelector((state) => state.allrawfiles.payload || []);
+
+  const [searchedData, setSearchedData] = useState(files);
+
+  const fetchRawData = async (data) => {
     const tempArr = [];
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        const tempFileName = Object.keys(files[i].files)[0];
-        const tempData = files[i].files[tempFileName]["raw_url"];
-        await axios
-          .get(tempData)
-          .then((res) => {
-            tempArr.push(res.data);
-          })
-          .catch((err) => {
-            console.log(`Error fetching data: ${err}`);
-          });
-      }
-      dispatch(userSetRawData(tempArr));
+
+    for (let i = 0; i < data.length; i++) {
+      const tempFileName = Object.keys(data[i].files)[0];
+      const tempData = data[i].files[tempFileName]["raw_url"];
+      await axios
+        .get(tempData)
+        .then((res) => {
+          tempArr.push(res.data);
+        })
+        .catch((err) => {
+          console.log(`Error fetching raw data: ${err}`);
+          setRawError(err);
+        });
     }
+    dispatch(userSetRawData(tempArr));
   };
 
   const getUserFiles = async () => {
@@ -57,11 +60,13 @@ export default function UserGists() {
         if (res.data.length > 0) {
           if (user.id === JSON.stringify(res.data[0].owner.id)) {
             dispatch(userSetFiles(res.data));
+            fetchRawData(res.data);
           }
         }
       })
       .catch((error) => {
         console.log(`Error fetching data: ${error}`);
+        setError(error);
       });
   };
 
@@ -84,20 +89,33 @@ export default function UserGists() {
       });
   };
 
+  const searchFiles = (e) => {
+    e.preventDefault();
+    let tempData = files;
+    if (searchQuery) {
+      tempData = files.filter((file) =>
+        file.id.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    setSearchedData(tempData);
+  };
+
   useEffect(() => {
     if (!deleteCheck) {
       getUserFiles();
-      fetchRawData();
     } else {
-      fetchRawData();
       setDeleteCheck(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSearchedData(files);
   }, [files.length]);
 
   return (
     <div className="users-gist-container">
-      <NavBar user={user} />
+      <NavBar
+        user={user}
+        setSearchQuery={setSearchQuery}
+        searchFiles={searchFiles}
+      />
       {user ? (
         <div className="container">
           <div className="row user-and-files">
@@ -115,11 +133,12 @@ export default function UserGists() {
               </button>
             </div>
             <div className="col files">
-              {files ? (
-                files.map((file, idx) => {
+              {searchedData ? (
+                searchedData.map((file, idx) => {
                   const file_name = Object.keys(file.files)[0];
                   const [, fTime] = file.created_at.split("T");
-                  const time = fTime.split("Z");
+                  const [time] = fTime.split("Z");
+
                   return (
                     <div key={file.id} className="single-files">
                       <div className="user-gist-page-header">
@@ -131,15 +150,8 @@ export default function UserGists() {
                           />
                           <div className="card-body">
                             <h5 className="card-title">
-                              {file.owner.login.length > 9
-                                ? file.owner.login.slice(0, 9) + "..."
-                                : file.owner.login}
-                              /
-                              <span className="card-filename">
-                                {file_name.length > 7
-                                  ? file_name.slice(0, 7) + "..."
-                                  : file_name}
-                              </span>
+                              {file.owner.login}/
+                              <span className="card-filename">{file_name}</span>
                             </h5>
                             <p className="card-time">{time}</p>
                             <p className="card-source">Broadcast Server</p>
@@ -148,7 +160,7 @@ export default function UserGists() {
                         <div className="user-gist-page-action">
                           <Link
                             to="/editgist"
-                            state={[file, user]}
+                            state={{ file: file, user: user }}
                             style={{ textDecoration: "none" }}
                           >
                             <div className="action">
@@ -158,8 +170,7 @@ export default function UserGists() {
                           </Link>
                           <div
                             className="action"
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={() => {
                               deleteCurrentFile(file);
                             }}
                           >
@@ -188,14 +199,14 @@ export default function UserGists() {
                             disabled={true}
                           />
                         ) : (
-                          <Spinner />
+                          <Spinner error={rawError} />
                         )}
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <Spinner />
+                <Spinner error={error} />
               )}
             </div>
           </div>

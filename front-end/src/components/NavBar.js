@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/nav-bar.css";
-export default function NavBar({ user, setSearchQuery, startSearch }) {
+
+export default function NavBar({ user, setSearchQuery, searchFiles }) {
   const gitHub = () => {
     window.open("http://localhost:5000/auth/github", "_self");
   };
@@ -29,7 +30,7 @@ export default function NavBar({ user, setSearchQuery, startSearch }) {
             />
             <button
               className="btn btn-light btn-search"
-              onClick={(e) => startSearch(e)}
+              onClick={(e) => searchFiles(e)}
             >
               Search
             </button>
@@ -54,7 +55,7 @@ export default function NavBar({ user, setSearchQuery, startSearch }) {
                   <Link
                     style={{ textDecoration: "none", color: "black" }}
                     to="/mygists"
-                    state={user}
+                    state={{ user: user }}
                   >
                     <p>Your gists</p>
                   </Link>

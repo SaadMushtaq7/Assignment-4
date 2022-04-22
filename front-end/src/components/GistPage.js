@@ -1,30 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import NavBar from "./NavBar";
 import axios from "axios";
+import NavBar from "./NavBar";
 import "../styles/gist-page.css";
+
 export default function GistPage() {
   const location = useLocation();
-  const currentFile = location.state[0];
-  const currentUser = location.state[1];
+  const { file: currentFile, user: currentUser } = location.state;
+
   const [rawData, setRawData] = useState("");
   const [, fTime] = currentFile.created_at.split("T");
-  const time = fTime.split("Z");
+  const [time] = fTime.split("Z");
 
   const file_name = Object.keys(currentFile.files)[0];
   const temp = currentFile.files[file_name]["raw_url"];
-  const fetchFiles = async () => {
+
+  const fetchFiles = useCallback(async () => {
     await axios
       .get(temp)
       .then((res) => {
         setRawData(res.data);
       })
       .catch((error) => console.log(`Error fetching data: ${error}`));
-  };
+  }, [temp]);
+
   useEffect(() => {
     fetchFiles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchFiles]);
 
   return (
     <div className="gist-page-container">

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/home-page-list.css";
+
 export default function HomePageList({ data, user }) {
   return (
     <div className="home-page-list-container">
@@ -23,11 +24,11 @@ export default function HomePageList({ data, user }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((file, idx) => {
+          {data.map((file, index) => {
             const [date, fTime] = file.created_at.split("T");
-            const time = fTime.split("Z");
+            const [time] = fTime.split("Z");
             return (
-              <tr key={idx}>
+              <tr key={index}>
                 <td>
                   <input type="checkbox" className="checkbox-size" />
                 </td>
@@ -42,11 +43,9 @@ export default function HomePageList({ data, user }) {
                   <Link
                     style={{ textDecoration: "none", color: "black" }}
                     to="/file"
-                    state={[file, user]}
+                    state={{ file: file, user: user }}
                   >
-                    {Object.keys(file.files)[0].length > 22
-                      ? Object.keys(file.files)[0].slice(0, 22) + `...`
-                      : Object.keys(file.files)[0].slice(0, 22)}
+                    {Object.keys(file.files)[0]}
                   </Link>
                 </td>
                 <td className="actionIcon">

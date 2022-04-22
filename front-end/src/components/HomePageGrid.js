@@ -6,7 +6,9 @@ import "../styles/home-page-grid.css";
 
 export default function HomePageGrid({ data, user }) {
   const [rawDataUrl] = useState([]);
-  const [dataReceived, setDataReceived] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const fetchFiles = async () => {
     for (let i = 0; i < data.length; i++) {
       const file_name = Object.keys(data[i].files)[0];
@@ -16,10 +18,14 @@ export default function HomePageGrid({ data, user }) {
         .then((res) => {
           rawDataUrl.push(res.data);
         })
-        .catch((error) => console.log(`Error fetching data: ${error}`));
+        .catch((error) => {
+          console.log(`Error fetching data: ${error}`);
+          setError(error);
+        });
     }
-    setDataReceived(true);
+    setDataLoading(true);
   };
+
   useEffect(() => {
     fetchFiles();
   });
@@ -27,21 +33,17 @@ export default function HomePageGrid({ data, user }) {
   return (
     <div className="home-page-grid-container">
       <div className="container">
-        {!dataReceived ? (
-          <Spinner />
+        {!dataLoading ? (
+          <Spinner error={error} />
         ) : (
           <div className="row">
-            {data.map((file, idx) => {
+            {data.map((file, index) => {
               const [, fTime] = file.created_at.split("T");
-              const time = fTime.split("Z");
+              const [time] = fTime.split("Z");
               return (
-                <div key={idx} className="col-sm">
+                <div key={index} className="col-sm">
                   <div className="card">
-                    <p className="card-text">
-                      {rawDataUrl[idx].length > 500
-                        ? rawDataUrl[idx].slice(0, 450) + ` more...`
-                        : rawDataUrl[idx]}
-                    </p>
+                    <p className="card-text">{rawDataUrl[index]}</p>
                     <div className="grid-user">
                       <img
                         src={file.owner.avatar_url}
@@ -55,12 +57,9 @@ export default function HomePageGrid({ data, user }) {
                             <Link
                               style={{ textDecoration: "none" }}
                               to="/file"
-                              state={[file, user]}
+                              state={{ file: file, user: user }}
                             >
-                              {Object.keys(file.files)[0].length > 10
-                                ? Object.keys(file.files)[0].slice(0, 10) +
-                                  "..."
-                                : Object.keys(file.files)[0]}
+                              {Object.keys(file.files)[0]}
                             </Link>
                           </span>
                         </h5>

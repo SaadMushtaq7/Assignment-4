@@ -2,26 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { userEditFile } from "../redux/actions/filesActions";
-import NavBar from "./NavBar";
 import { ToastContainer, toast } from "react-toastify";
+import NavBar from "./NavBar";
+import { userEditFile } from "../redux/actions/filesActions";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function EditGistFile() {
   const location = useLocation();
-  const stateData = location.state;
-  const user = stateData[1];
-  const file = stateData[0];
+  const { user, file } = location.state;
+
   const [desc, setDesc] = useState(file.description);
   const [fileName, setFileName] = useState(Object.keys(file.files)[0]);
   const [fileContent, setFileContent] = useState("");
 
   const dispatch = useDispatch();
+
   const handleUpdate = () => {
-    const tempFile = {};
-    const fileData = {};
-    fileData["content"] = fileContent;
-    tempFile[fileName] = fileData;
+    const tempFile = { [fileName]: { content: fileContent } };
     axios
       .patch(
         `https://api.github.com/gists/${file.id}`,
@@ -44,6 +41,7 @@ export default function EditGistFile() {
         toast.success("File Updated Successfully!");
       });
   };
+
   useEffect(() => {
     const tempData = file.files[fileName]["raw_url"];
     axios
@@ -52,8 +50,8 @@ export default function EditGistFile() {
         setFileContent(res.data);
       })
       .catch((err) => console.log(`Error fetching data: ${err}`));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [file.files, fileName]);
+
   return (
     <>
       <NavBar user={user} />

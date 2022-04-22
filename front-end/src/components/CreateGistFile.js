@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import NavBar from "./NavBar";
 import { ToastContainer, toast } from "react-toastify";
+import NavBar from "./NavBar";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/create-gist-file.css";
 
 export default function CreateGistFile() {
   const location = useLocation();
-  const currentUser = location.state;
+  const { user: currentUser } = location.state;
+
   const [desc, setDesc] = useState("");
   const [fileName, setFileName] = useState("");
   const [fileContent, setFileContent] = useState("");
 
   const createGist = () => {
     if (desc !== "" && fileName !== "" && fileContent !== "") {
-      const file = {};
-      const fileData = {};
-      fileData["content"] = fileContent;
-      file[fileName] = fileData;
+      const file = { [fileName]: { content: fileContent } };
       axios
         .post(
           "https://api.github.com/gists",
@@ -31,7 +29,6 @@ export default function CreateGistFile() {
           }
         )
         .then((res) => {
-          console.log(res);
           toast.success("File Added Successfully!");
           setDesc("");
           setFileContent("");

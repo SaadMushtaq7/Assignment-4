@@ -1,35 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { setFiles } from "../redux/actions/filesActions";
 import NavBar from "./NavBar";
 import HomePageGrid from "./HomePageGrid";
 import HomePageList from "./HomePageList";
 import Spinner from "./Spinner";
 import Pagination from "./Pagination";
+import { setFiles } from "../redux/actions/filesActions";
 import "../styles/home-page.css";
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState("");
-
   //states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState(null);
   const [mode, setMode] = useState(false);
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filesPerPage] = useState(6);
 
   const files = useSelector((state) => state.allfiles.files);
-  const [searchedData, setSearchedData] = useState([]);
+  const [searchedData, setSearchedData] = useState(files);
 
   const dispatch = useDispatch();
-  const fetchFiles = async () => {
+
+  const fetchFiles = useCallback(async () => {
     const response = await axios
       .get("https://api.github.com/gists")
-      .catch((error) => console.log(`Error fetching data: ${error}`));
+      .catch((error) => {
+        console.log(`Error fetching data: ${error}`);
+        setError(error);
+      });
     dispatch(setFiles(response.data));
-  };
-  const getUser = async () => {
+  }, [dispatch]);
+
+  const getUser = useCallback(async () => {
     await fetch("http://localhost:5000/auth/login/success", {
       method: "GET",
       credentials: "include",
@@ -49,21 +54,19 @@ export default function HomePage() {
       .catch((err) => {
         console.log(err);
       });
-  };
-  const startSearch = (e) => {
-    e.preventDefault();
+  }, []);
 
-    const tempSearch = files.filter((file) => {
-      if (searchQuery === "") {
-        return file;
-      } else if (file.id.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return file;
-      } else {
-        return null;
-      }
-    });
-    setSearchedData(tempSearch);
+  const searchFiles = (e) => {
+    e.preventDefault();
+    let tempData = files;
+    if (searchQuery) {
+      tempData = files.filter((file) =>
+        file.id.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    setSearchedData(tempData);
   };
+
   const indexOfLastFile = currentPage * filesPerPage;
   const indexOfFirstFile = indexOfLastFile - filesPerPage;
   const currentFiles = searchedData.slice(indexOfFirstFile, indexOfLastFile);
@@ -72,34 +75,31 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFiles();
-    setSearchedData(files);
     getUser();
-    return () => {
-      setSearchedData(files);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files.length]);
+    setSearchedData(files);
+  }, [files, getUser, fetchFiles]);
 
   return (
     <div className="home-page-container">
       <NavBar
         user={user}
         setSearchQuery={setSearchQuery}
-        startSearch={startSearch}
+        searchFiles={searchFiles}
       />
       <div className="display-change">
-        {user ? (
+        {user && (
           <div className="add-gist-btn">
-            <Link to="/addgist" state={user} style={{ textDecoration: "none" }}>
+            <Link
+              to="/addgist"
+              state={{ user: user }}
+              style={{ textDecoration: "none" }}
+            >
               <i className="fa-solid fa-circle-plus" />
             </Link>
           </div>
-        ) : (
-          ""
         )}
         <i
           onClick={(e) => {
-            e.stopPropagation();
             setMode(false);
           }}
           className={!mode ? "fa-solid fa-list clicked" : "fa-solid fa-list"}
@@ -107,7 +107,6 @@ export default function HomePage() {
         <p>|</p>
         <i
           onClick={(e) => {
-            e.stopPropagation();
             setMode(true);
           }}
           className={
@@ -115,28 +114,21 @@ export default function HomePage() {
           }
         />
       </div>
-      {searchedData.length > 0 ? (
-        mode ? (
-          <>
+      {searchedData.length ? (
+        <>
+          {mode ? (
             <HomePageGrid data={currentFiles} user={user} />
-            <Pagination
-              filesPerPage={filesPerPage}
-              totalFiles={searchedData.length}
-              paginate={paginate}
-            />
-          </>
-        ) : (
-          <>
+          ) : (
             <HomePageList data={currentFiles} user={user} />
-            <Pagination
-              filesPerPage={filesPerPage}
-              totalFiles={searchedData.length}
-              paginate={paginate}
-            />
-          </>
-        )
+          )}
+          <Pagination
+            filesPerPage={filesPerPage}
+            totalFiles={searchedData.length}
+            paginate={paginate}
+          />
+        </>
       ) : (
-        <Spinner />
+        <Spinner error={error} />
       )}
     </div>
   );

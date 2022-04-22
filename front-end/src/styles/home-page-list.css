@@ -41,6 +41,13 @@
     display: flex;
     flex-direction: row;
 }
+.home-page-list-container table tbody td.file-name{
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
 .home-page-list-container table thead th i,
 .home-page-list-container table tbody td i{
     color: #5acba1;

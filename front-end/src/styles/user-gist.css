@@ -80,6 +80,10 @@
     font-size: 17px;
     margin: 0;
     padding: 0;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .files .user-gist-page-header .user-gist-page-user .card-body .card-filename{
     font-weight: bolder;
