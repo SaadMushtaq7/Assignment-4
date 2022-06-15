@@ -4,7 +4,7 @@ import axios from "axios";
 import Spinner from "./Spinner";
 import "../styles/home-page-grid.css";
 
-export default function HomePageGrid({ data, user }) {
+export default function HomePageGrid({ data }) {
   const [rawDataUrl] = useState([]);
   const [dataLoading, setDataLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -57,7 +57,7 @@ export default function HomePageGrid({ data, user }) {
                             <Link
                               style={{ textDecoration: "none" }}
                               to="/file"
-                              state={{ file: file, user: user }}
+                              state={{ file: file }}
                             >
                               {Object.keys(file.files)[0]}
                             </Link>

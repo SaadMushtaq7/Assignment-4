@@ -15,12 +15,12 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
   const [mode, setMode] = useState(false);
-  const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filesPerPage] = useState(6);
 
   const files = useSelector((state) => state.allfiles.files);
   const [searchedData, setSearchedData] = useState(files);
+  const user = useSelector((state) => state.userProfile.files);
 
   const dispatch = useDispatch();
 
@@ -33,28 +33,6 @@ export default function HomePage() {
       });
     dispatch(setFiles(response.data));
   }, [dispatch]);
-
-  const getUser = useCallback(async () => {
-    await fetch("http://localhost:5000/auth/login/success", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": true,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) return response.json();
-        throw new Error("authentication failed");
-      })
-      .then((resObject) => {
-        setUser(resObject.user);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const searchFiles = (e) => {
     e.preventDefault();
@@ -75,9 +53,8 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFiles();
-    getUser();
     setSearchedData(files);
-  }, [files, getUser, fetchFiles]);
+  }, [fetchFiles, files.length]);
 
   return (
     <div className="home-page-container">
@@ -89,11 +66,7 @@ export default function HomePage() {
       <div className="display-change">
         {user && (
           <div className="add-gist-btn">
-            <Link
-              to="/addgist"
-              state={{ user: user }}
-              style={{ textDecoration: "none" }}
-            >
+            <Link to="/addgist" style={{ textDecoration: "none" }}>
               <i className="fa-solid fa-circle-plus" />
             </Link>
           </div>
@@ -117,9 +90,9 @@ export default function HomePage() {
       {searchedData.length ? (
         <>
           {mode ? (
-            <HomePageGrid data={currentFiles} user={user} />
+            <HomePageGrid data={currentFiles} />
           ) : (
-            <HomePageList data={currentFiles} user={user} />
+            <HomePageList data={currentFiles} />
           )}
           <Pagination
             filesPerPage={filesPerPage}

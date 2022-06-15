@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useFormik } from "formik";
@@ -8,8 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styles/create-gist-file.css";
 
 export default function CreateGistFile() {
-  const location = useLocation();
-  const { user: currentUser } = location.state;
+  const currentUser = useSelector((state) => state.userProfile.files);
 
   const formik = useFormik({
     initialValues: {

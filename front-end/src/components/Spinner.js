@@ -4,12 +4,12 @@ import "../styles/spinner.css";
 export default function Spinner({ error }) {
   return (
     <div className="spinner-container">
-      {!error ? (
-        <img src={loading} alt="loading" />
-      ) : (
+      {error ? (
         <h2>
           Data not found <i className="fa-solid fa-circle-exclamation"></i>
         </h2>
+      ) : (
+        <img src={loading} alt="loading" />
       )}
     </div>
   );

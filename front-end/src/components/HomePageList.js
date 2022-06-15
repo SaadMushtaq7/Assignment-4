@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/home-page-list.css";
 
-export default function HomePageList({ data, user }) {
+export default function HomePageList({ data }) {
   return (
     <div className="home-page-list-container">
       <table className="table table-light">
@@ -40,13 +40,15 @@ export default function HomePageList({ data, user }) {
                 <td>{time}</td>
                 <td>Web Server</td>
                 <td className="file-name">
-                  <Link
-                    style={{ textDecoration: "none", color: "black" }}
-                    to="/file"
-                    state={{ file: file, user: user }}
-                  >
-                    {Object.keys(file.files)[0]}
-                  </Link>
+                  <h5>
+                    <Link
+                      style={{ textDecoration: "none", color: "black" }}
+                      to="/file"
+                      state={{ file: file }}
+                    >
+                      {Object.keys(file.files)[0]}
+                    </Link>
+                  </h5>
                 </td>
                 <td className="actionIcon">
                   <i className="fa-regular fa-star" />

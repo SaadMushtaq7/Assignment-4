@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import NavBar from "./NavBar";
-import { userEditFile } from "../redux/actions/filesActions";
+import { userEditFile, userEditRawData } from "../redux/actions/filesActions";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function EditGistFile() {
   const location = useLocation();
-  const { user, file } = location.state;
+  const { file, index } = location.state;
+  console.log(location.state);
+  const user = useSelector((state) => state.userProfile.files);
+  const rawFiles = useSelector((state) => state.allrawfiles.payload || []);
 
   const [desc, setDesc] = useState(file.description);
   const [fileName, setFileName] = useState(Object.keys(file.files)[0]);
@@ -18,6 +21,11 @@ export default function EditGistFile() {
   const dispatch = useDispatch();
 
   const handleUpdate = () => {
+    const stateRawFile = {
+      index: index,
+      fileContent: fileContent,
+    };
+    dispatch(userEditRawData(stateRawFile));
     const tempFile = { [fileName]: { content: fileContent } };
     axios
       .patch(
@@ -32,26 +40,19 @@ export default function EditGistFile() {
       )
       .then((res) => {
         dispatch(userEditFile(res.data));
+
+        toast.success("File Updated Successfully!");
       })
       .catch((err) => {
         console.log(`Error Updating data: ${err}`);
         toast.error("Failed to update");
-      })
-      .finally(() => {
-        toast.success("File Updated Successfully!");
+        return;
       });
   };
 
   useEffect(() => {
-    const tempData = file.files[fileName]["raw_url"];
-    axios
-      .get(tempData)
-      .then((res) => {
-        setFileContent(res.data);
-      })
-      .catch((err) => console.log(`Error fetching data: ${err}`));
-  }, [file.files, fileName]);
-
+    setFileContent(rawFiles[index]);
+  }, [index, rawFiles]);
   return (
     <>
       <NavBar user={user} />

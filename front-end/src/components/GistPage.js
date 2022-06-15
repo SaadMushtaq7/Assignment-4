@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import NavBar from "./NavBar";
 import "../styles/gist-page.css";
 
 export default function GistPage() {
   const location = useLocation();
-  const { file: currentFile, user: currentUser } = location.state;
+  const currentUser = useSelector((state) => state.userProfile.files);
+
+  const { file: currentFile } = location.state;
 
   const [rawData, setRawData] = useState("");
   const [, fTime] = currentFile.created_at.split("T");
@@ -23,6 +26,26 @@ export default function GistPage() {
       })
       .catch((error) => console.log(`Error fetching data: ${error}`));
   }, [temp]);
+
+  const handleStar = () => {
+    axios
+      .post(
+        "https://api.github.com/gists",
+        {
+          description: currentFile.description,
+          public: false,
+          files: currentFile,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_GIT_PAK}`,
+          },
+        }
+      )
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     fetchFiles();
@@ -48,7 +71,7 @@ export default function GistPage() {
           </div>
         </div>
         <div className="gist-page-action">
-          <div>
+          <div onClick={handleStar}>
             Stars
             <i className="fa-regular fa-star" />
             <span>0</span>

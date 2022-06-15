@@ -41,10 +41,11 @@
     display: flex;
     flex-direction: row;
 }
-.home-page-list-container table tbody td.file-name{
-    width: 200px;
+.home-page-list-container table tbody tr td.file-name h5{
+    font-size: 15px;
     white-space: nowrap;
     overflow: hidden;
+    width: 200px;
     text-overflow: ellipsis;
     
 }

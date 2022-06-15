@@ -22,7 +22,7 @@
     cursor: pointer;
 }
 .home-page-container .display-change .add-gist-btn{
-    margin-right: 950px;
+    margin-right: 75%;
 }
 .home-page-container .display-change i.fa-circle-plus{
     font-size: 25px;

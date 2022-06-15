@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import NavBar from "./NavBar";
 import Spinner from "./Spinner";
@@ -9,15 +9,16 @@ import {
   userSetFiles,
   userSetRawData,
   userDeleteFile,
+  userDeleteRawData,
 } from "../redux/actions/filesActions";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/user-gist.css";
 
 export default function UserGists() {
-  const location = useLocation();
-  const { user } = location.state;
+  const user = useSelector((state) => state.userProfile.files);
 
   const [deleteCheck, setDeleteCheck] = useState(false);
+  const [editCheck, setEditCheck] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
   const [rawError, setRawError] = useState(null);
@@ -29,26 +30,28 @@ export default function UserGists() {
 
   const [searchedData, setSearchedData] = useState(files);
 
-  const fetchRawData = async (data) => {
-    const tempArr = [];
+  const fetchRawData = useCallback(
+    async (data) => {
+      const tempArr = [];
 
-    for (let i = 0; i < data.length; i++) {
-      const tempFileName = Object.keys(data[i].files)[0];
-      const tempData = data[i].files[tempFileName]["raw_url"];
-      await axios
-        .get(tempData)
-        .then((res) => {
-          tempArr.push(res.data);
-        })
-        .catch((err) => {
-          console.log(`Error fetching raw data: ${err}`);
-          setRawError(err);
-        });
-    }
-    dispatch(userSetRawData(tempArr));
-  };
-
-  const getUserFiles = async () => {
+      for (let i = 0; i < data.length; i++) {
+        const tempFileName = Object.keys(data[i].files)[0];
+        const tempData = data[i].files[tempFileName]["raw_url"];
+        await axios
+          .get(tempData)
+          .then((res) => {
+            tempArr.push(res.data);
+          })
+          .catch((err) => {
+            console.log(`Error fetching raw data: ${err}`);
+            setRawError(err);
+          });
+      }
+      dispatch(userSetRawData(tempArr));
+    },
+    [dispatch]
+  );
+  const getUserFiles = useCallback(async () => {
     await axios
       .get(`https://api.github.com/gists`, {
         headers: {
@@ -68,9 +71,9 @@ export default function UserGists() {
         console.log(`Error fetching data: ${error}`);
         setError(error);
       });
-  };
+  }, [dispatch, files]);
 
-  const deleteCurrentFile = async (file) => {
+  const deleteCurrentFile = async (file, index) => {
     await axios
       .delete(`https://api.github.com/gists/${file.id}`, {
         headers: {
@@ -81,6 +84,7 @@ export default function UserGists() {
       .then((res) => {
         toast.info("File Deleted!");
         dispatch(userDeleteFile(file));
+        dispatch(userDeleteRawData(index));
         setDeleteCheck(true);
       })
       .catch((error) => {
@@ -133,7 +137,7 @@ export default function UserGists() {
               </button>
             </div>
             <div className="col files">
-              {searchedData ? (
+              {searchedData.length ? (
                 searchedData.map((file, idx) => {
                   const file_name = Object.keys(file.files)[0];
                   const [, fTime] = file.created_at.split("T");
@@ -160,7 +164,10 @@ export default function UserGists() {
                         <div className="user-gist-page-action">
                           <Link
                             to="/editgist"
-                            state={{ file: file, user: user }}
+                            state={{
+                              file: file,
+                              index: idx,
+                            }}
                             style={{ textDecoration: "none" }}
                           >
                             <div className="action">
@@ -171,7 +178,7 @@ export default function UserGists() {
                           <div
                             className="action"
                             onClick={() => {
-                              deleteCurrentFile(file);
+                              deleteCurrentFile(file, idx);
                             }}
                           >
                             <i className="fa-solid fa-trash-can" />

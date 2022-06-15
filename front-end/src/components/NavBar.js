@@ -55,7 +55,6 @@ export default function NavBar({ user, setSearchQuery, searchFiles }) {
                   <Link
                     style={{ textDecoration: "none", color: "black" }}
                     to="/mygists"
-                    state={{ user: user }}
                   >
                     <p>Your gists</p>
                   </Link>

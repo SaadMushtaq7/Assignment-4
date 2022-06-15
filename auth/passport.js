@@ -2,7 +2,7 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const passport = require("passport");
 
 GITHUB_CLIENT_ID = "089bddea47eeab5fcc52";
-GITHUB_CLIENT_SECRET = "aba4b4f99519a50207a73f64ff4b6d66cd44da17";
+GITHUB_CLIENT_SECRET = "02263790af275ae169b07704d822cafa38bd229b";
 
 passport.use(
   new GitHubStrategy(
