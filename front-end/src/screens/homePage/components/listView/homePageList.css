@@ -54,6 +54,20 @@
     color: #5acba1;
     font-size: 15px;
     margin-right: 10px;
+    height: 0px;
+}
+.home-page-list-container table tbody td img{
+    width: 15px;
+    height: 15px;
+    font-size: 15px;
+    margin-right: 10px;
+    background-color: white;
+}
+.home-page-list-container table tbody td img:hover{
+    background-color: transparent;
+}
+.home-page-list-container table tbody td i.checked{
+    color: gold;
 }
 .home-page-list-container table tbody tr{
     transition: all 0.3s;

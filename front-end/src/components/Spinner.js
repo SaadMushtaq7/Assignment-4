@@ -1,7 +1,7 @@
 import loading from "../loading.gif";
 import "../styles/spinner.css";
 
-export default function Spinner({ error }) {
+const Spinner = ({ error }) => {
   return (
     <div className="spinner-container">
       {error ? (
@@ -13,4 +13,6 @@ export default function Spinner({ error }) {
       )}
     </div>
   );
-}
+};
+
+export default Spinner;

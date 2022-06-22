@@ -1,7 +1,9 @@
 import React from "react";
+import * as R from "ramda";
 import "../styles/pagination.css";
 
-export default function Pagination({ filesPerPage, totalFiles, paginate }) {
+const Pagination = ({ filesPerPage, totalFiles, paginate }) => {
+  const mapIndexed = R.addIndex(R.map);
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalFiles / filesPerPage); i++) {
     pageNumbers.push(i);
@@ -10,7 +12,7 @@ export default function Pagination({ filesPerPage, totalFiles, paginate }) {
   return (
     <nav>
       <ul className="pagination">
-        {pageNumbers.map((number) => {
+        {mapIndexed((number) => {
           return (
             <li key={number} className="page-item">
               <a
@@ -22,8 +24,10 @@ export default function Pagination({ filesPerPage, totalFiles, paginate }) {
               </a>
             </li>
           );
-        })}
+        }, pageNumbers)}
       </ul>
     </nav>
   );
-}
+};
+
+export default Pagination;

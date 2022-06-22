@@ -1,41 +1,38 @@
-import "./App.css";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUserProfile } from "./redux/actions/filesActions";
-import HomePage from "./components/HomePage";
-import GistPage from "./components/GistPage";
-import CreateGistFile from "./components/CreateGistFile";
-import UserGists from "./components/UserGists";
-import EditGistFile from "./components/EditGistFile";
+import { setUserProfile, setStarFiles } from "./redux/actions/filesActions";
+import { getUser } from "./services/githubLogin";
+import useApiCall from "./customHooks/useApiCall";
+import HomePage from "./screens/homePage/HomePage";
+import GistPage from "./screens/GistPage";
+import GistActions from "./screens/GistActions/GistActions";
+import GistList from "./screens/Gists/GistList";
+import "./App.css";
 
-export default function App() {
+const App = () => {
   const dispatch = useDispatch();
 
-  const getUser = async () => {
-    await fetch("http://localhost:5000/auth/login/success", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": true,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) return response.json();
-        throw new Error("authentication failed");
-      })
-      .then((resObject) => {
-        dispatch(setUserProfile(resObject.user));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const { data: starredData, error: starredError } = useApiCall({
+    url: "https://api.github.com/gists/starred",
+    method: "get",
+    headerCheck: true,
+  });
+
+  const handleGetUser = useCallback(async () => {
+    const response = await getUser();
+    if (response.success) {
+      dispatch(setUserProfile(response.user));
+    }
+  }, [dispatch]);
+
   useEffect(() => {
-    getUser();
-  }, []);
+    handleGetUser();
+
+    if ((starredData, !starredError)) {
+      dispatch(setStarFiles(starredData));
+    }
+  }, [handleGetUser, starredData, starredError]);
 
   return (
     <Router>
@@ -45,13 +42,26 @@ export default function App() {
 
           <Route path="/file" element={<GistPage />} />
 
-          <Route path="/addgist" element={<CreateGistFile />} />
+          <Route
+            path="/addgist"
+            element={/*<CreateGistFile />*/ <GistActions />}
+          />
 
-          <Route path="/mygists" element={<UserGists />} />
+          <Route path="/mygists" element={/*<UserGists />*/ <GistList />} />
 
-          <Route path="/editgist" element={<EditGistFile />} />
+          <Route
+            path="/starredgists"
+            element={/*<StarredFiles />*/ <GistList />}
+          />
+
+          <Route
+            path="/editgist"
+            element={/*<EditGistFile />*/ <GistActions />}
+          />
         </Routes>
       </>
     </Router>
   );
-}
+};
+
+export default App;

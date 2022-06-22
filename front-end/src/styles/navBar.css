@@ -56,7 +56,7 @@ font-size: 15px;
     margin-left: 5px;
 }
 .nav-bar-container .d-flex{
-    margin-left: 10%;
+    margin-left: 0;
 }
 .nav-bar-container .d-flex input{
     width: 300px;

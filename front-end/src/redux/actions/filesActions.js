@@ -52,3 +52,43 @@ export const setUserProfile = (files) => {
     payload: files,
   };
 };
+
+export const setStarFiles = (files) => {
+  return {
+    type: ActionTypes.SET_STAR_FILES,
+    payload: files,
+  };
+};
+
+export const addStarFile = (file) => {
+  return {
+    type: ActionTypes.ADD_STAR_FILE,
+    payload: file,
+  };
+};
+export const setStarredRawData = (files) => {
+  return {
+    type: ActionTypes.SET_STAR_RAW_DATA,
+    payload: files,
+  };
+};
+
+export const deleteStarredRawData = (file) => {
+  return {
+    type: ActionTypes.DELETE_STAR_RAW_DATA,
+    payload: file,
+  };
+};
+export const deleteStarFiles = (files) => {
+  return {
+    type: ActionTypes.DELETE_STAR_FILES,
+    payload: files,
+  };
+};
+
+export const setForkFiles = (files) => {
+  return {
+    type: ActionTypes.SET_FORK_FILES,
+    payload: files,
+  };
+};

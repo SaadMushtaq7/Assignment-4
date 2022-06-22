@@ -127,7 +127,9 @@
     margin-left: 10px;
     color: #1D80FF;
 }
-
+.files .user-gist-page-header .user-gist-page-action div.delete-action {
+    margin-left: 200px;
+}
 .files .user-gist-page-header .user-gist-page-action div i{
     font-size: 15px;
     margin-left: 5px;

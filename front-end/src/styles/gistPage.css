@@ -74,10 +74,18 @@
     margin-left: 5px;
     margin-right: 5px;
 }
+.gist-page-container .gist-page-header .gist-page-action div i.checked{
+    color: gold;
+}
 .gist-page-container .gist-page-header .gist-page-action .action{
     cursor: pointer;
 }
-.gist-page-container .gist-page-header .gist-page-action div span{
+.gist-page-container .gist-page-header .gist-page-action div span.icon-box{
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+.gist-page-container .gist-page-header .gist-page-action div span.count{
     width: 30px;
     height: 25px;
     margin: 0px 5px;

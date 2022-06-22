@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../styles/nav-bar.css";
+//import GitHubLogin from "react-github-login";
+//import { useDispatch } from "react-redux";
+//import { setUserProfile } from "../redux/actions/filesActions";
+import "../styles/navBar.css";
 
-export default function NavBar({ user, setSearchQuery, searchFiles }) {
+const NavBar = ({ user, setSearchQuery, searchFiles }) => {
   const gitHub = () => {
     window.open("http://localhost:5000/auth/github", "_self");
   };
@@ -10,6 +13,39 @@ export default function NavBar({ user, setSearchQuery, searchFiles }) {
     window.open("http://localhost:5000/auth/logout", "_self");
   };
 
+  /* const getUserToken = (code) => {
+    const clientId = "089bddea47eeab5fcc52";
+    const clientSecret = "02263790af275ae169b07704d822cafa38bd229b";
+    const requestBody = {
+      headers: {
+        accept: "application/vnd.github.v3+json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `code=${code}&client_id=${clientId}&client_secret=${clientSecret}`,
+    };
+    return fetch(
+      "https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token",
+      {
+        method: "post",
+        ...requestBody,
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data.access_token);
+        return data.access_token;
+      });
+  };
+
+  const onSuccess = async (response) => {
+    console.log("successfull");
+    //   const accessToken = await getUserToken(response);
+    //   localStorage.setItem("accessToken", accessToken);
+  };
+  const onFailure = (response) => console.log(response);
+*/
   return (
     <div className="nav-bar-container">
       <nav className="navbar navbar-expand-md navbar-light navbar-bg">
@@ -54,11 +90,23 @@ export default function NavBar({ user, setSearchQuery, searchFiles }) {
                 <div className="userTools">
                   <Link
                     style={{ textDecoration: "none", color: "black" }}
+                    state={{
+                      filesType: "userGists",
+                    }}
                     to="/mygists"
                   >
                     <p>Your gists</p>
                   </Link>
-                  <p>Starred gists</p>
+                  <Link
+                    style={{ textDecoration: "none", color: "black" }}
+                    state={{
+                      filesType: "starGists",
+                    }}
+                    to="/starredgists"
+                  >
+                    <p>Starred gists</p>
+                  </Link>
+
                   <p>Help</p>
                 </div>
                 <div className="userLogout">
@@ -76,4 +124,19 @@ export default function NavBar({ user, setSearchQuery, searchFiles }) {
       </nav>
     </div>
   );
-}
+};
+
+export default NavBar;
+
+/*
+<GitHubLogin
+              className="btn btn-light btn-login"
+              clientId="089bddea47eeab5fcc52"
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+              buttonText="LOGIN"
+              valid={true}
+              redirectUri="http://localhost:5000/auth/github/callback"
+              scope="gist"
+            />
+*/
