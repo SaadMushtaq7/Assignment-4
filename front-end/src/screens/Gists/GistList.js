@@ -34,36 +34,38 @@ const GistList = () => {
   const [rawError, setRawError] = useState(null);
   const [files, setFiles] = useState([]);
   const [rawFiles, setRawFiles] = useState([]);
+
   const user = useSelector((state) => state.userProfile.user);
   const userFiles = useSelector((state) => state.alluserfiles.files || []);
-  const rawUserFiles = useSelector((state) => state.allrawfiles.payload || []);
   const starFiles = useSelector((state) => state.starfiles.files || []);
-  const rawStarFiles = useSelector(
-    (state) => state.allstarrawfiles.payload || []
-  );
 
   const [searchedData, setSearchedData] = useState(files);
+  console.log(starFiles);
+  const rawDataFetcher = useCallback(async (file) => {
+    const file_name = Object.keys(file.files)[0];
+    const temp = file.files[file_name]["raw_url"];
+    const res = await fetchGistRaw(temp);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      setRawError(res);
+    }
+  }, []);
 
   const handleFetchGistRaw = useCallback(
     async (data) => {
-      const tempArr = [];
-      for (let i = 0; i < data.length; i++) {
-        const file_name = Object.keys(data[i].files)[0];
-        const temp = data[i].files[file_name]["raw_url"];
-        const res = await fetchGistRaw(temp);
-        if (res.status === 200) {
-          tempArr.push(res.data);
-        } else {
-          setRawError(res);
-        }
-      }
+      const promises = [];
+      promises.push(R.map(rawDataFetcher, data));
+
+      Promise.all(promises[0]).then((res) => setRawFiles(res));
+
       if (filesType === "userGists") {
-        dispatch(userSetRawData(tempArr));
+        dispatch(userSetRawData(rawFiles));
       } else if (filesType === "starGists") {
-        dispatch(setStarredRawData(tempArr));
+        dispatch(setStarredRawData(rawFiles));
       }
     },
-    [dispatch, filesType]
+    [dispatch, filesType, rawDataFetcher]
   );
 
   const handleDeleteGist = async (file, index) => {
@@ -111,20 +113,11 @@ const GistList = () => {
     }
     if (filesType === "userGists") {
       setFiles(userFiles);
-      setRawFiles(rawUserFiles);
     } else if (filesType === "starGists") {
       setFiles(starFiles);
-      setRawFiles(rawStarFiles);
     }
     setSearchedData(files);
-  }, [
-    files.length,
-    filesType,
-    userFiles.length,
-    starFiles.length,
-    rawUserFiles.length,
-    rawStarFiles.length,
-  ]);
+  }, [files.length, filesType, userFiles.length, starFiles.length]);
   return (
     <div className="users-gist-container">
       <NavBar

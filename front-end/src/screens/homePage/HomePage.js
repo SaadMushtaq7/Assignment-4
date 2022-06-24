@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as R from "ramda";
-import { setFiles } from "../../redux/actions/filesActions";
+import {
+  setFiles,
+  userSetFiles,
+  setStarFiles,
+} from "../../redux/actions/filesActions";
+import { fetchStarredGists, fetchUserGists } from "../../services/gistCRUD";
 import { isSomething } from "../../services/isSomething";
 import useApiCall from "../../customHooks/useApiCall";
 import NavBar from "../../components/NavBar";
@@ -35,6 +40,22 @@ const HomePage = () => {
     method: "get",
   });
 
+  const handleFetchUserGist = useCallback(async () => {
+    if (user) {
+      const res = await fetchUserGists(user.username);
+      if (res.status === 200) {
+        dispatch(userSetFiles(res.data));
+      }
+    }
+  }, [dispatch, user]);
+
+  const handleFetchStarredGist = useCallback(async () => {
+    const res = await fetchStarredGists();
+    if (res.status === 200) {
+      dispatch(setStarFiles(res.data));
+    }
+  }, [dispatch]);
+
   const searchFiles = (e) => {
     e.preventDefault();
     let tempData = files;
@@ -55,8 +76,17 @@ const HomePage = () => {
     if (publicData && !publicError) {
       dispatch(setFiles(publicData));
     }
+    handleFetchUserGist();
+    handleFetchStarredGist();
     setSearchedData(files);
-  }, [files.length, dispatch, publicData, publicError]);
+  }, [
+    files.length,
+    dispatch,
+    publicData,
+    publicError,
+    handleFetchStarredGist,
+    handleFetchUserGist,
+  ]);
   return (
     <div className="home-page-container">
       <NavBar

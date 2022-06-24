@@ -108,3 +108,15 @@ export const forkReducer = (state = [], { type, payload }) => {
       return state;
   }
 };
+
+export const publicRawDataReducer = (state = [], { type, payload }) => {
+  switch (type) {
+    case ActionTypes.SET_PUBLIC_RAW_FILES: {
+      const addFork = [...state, payload];
+      state = addFork;
+      return state;
+    }
+    default:
+      return state;
+  }
+};

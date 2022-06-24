@@ -4,33 +4,38 @@ import { fetchGistRaw } from "../../../../services/gistCRUD";
 import GridCard from "./components/GridCard";
 import Logo from "../../../../logo.svg";
 import "./homePageGrid.css";
+import Spinner from "../../../../components/Spinner";
 
 export default function HomePageGrid({ data }) {
   let mapIndexed = R.addIndex(R.map);
-  const [rawDataUrl] = useState([]);
+
+  const [rawDataUrl, setRawDataUrl] = useState([]);
   const [dataLoading, setDataLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchFiles = useCallback(async () => {
-    setDataLoading(true);
-    for (let i = 0; i < data.length; i++) {
-      const file_name = Object.keys(data[i].files)[0];
-      const temp = data[i].files[file_name]["raw_url"];
-      const res = await fetchGistRaw(temp);
-      if (res.status === 200) {
-        rawDataUrl.push(res.data);
-      } else {
-        setError(res);
-      }
+  const rawDataFetcher = useCallback(async (file) => {
+    const file_name = Object.keys(file.files)[0];
+    const temp = file.files[file_name]["raw_url"];
+    const res = await fetchGistRaw(temp);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      setError(res);
     }
+  }, []);
+
+  const fetchFiles = useCallback(() => {
+    setDataLoading(true);
+    const promises = [];
+    promises.push(R.map(rawDataFetcher, data));
+    Promise.all(promises[0]).then((res) => setRawDataUrl(res));
 
     setDataLoading(false);
-  }, [data, rawDataUrl]);
+  }, [data, rawDataFetcher, rawDataUrl.length]);
 
   useEffect(() => {
     fetchFiles();
-    console.log(rawDataUrl);
-  }, [fetchFiles, rawDataUrl]);
+  }, [fetchFiles]);
 
   return (
     <div className="home-page-grid-container">
@@ -42,7 +47,7 @@ export default function HomePageGrid({ data }) {
             return (
               <GridCard
                 key={index}
-                rawData={R.pathOr("Data not found!", [], rawDataUrl[index])}
+                rawData={R.pathOr(<Spinner />, [], rawDataUrl[index])}
                 avatar={R.pathOr(Logo, ["owner", "avatar_url"], file)}
                 username={R.pathOr("username", ["owner", "login"], file)}
                 time={R.pathOr("N/A", [], time)}

@@ -7,6 +7,7 @@ import {
   userFilesReducer,
   userRawDataReducer,
   userReducer,
+  publicRawDataReducer,
 } from "./filesReducer";
 const reducers = combineReducers({
   allfiles: filesReducer,
@@ -16,5 +17,6 @@ const reducers = combineReducers({
   starfiles: starReducer,
   allstarrawfiles: starRawDataReducer,
   forkfiles: forkReducer,
+  publicrawfiles: publicRawDataReducer,
 });
 export default reducers;

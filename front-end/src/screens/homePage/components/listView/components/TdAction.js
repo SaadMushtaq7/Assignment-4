@@ -5,7 +5,7 @@ const TdAction = ({
   loading,
   clickedFile,
   file,
-  files,
+  files, //access directly thorugh redux
   handleAction,
   checkedClass,
   simpleClass,

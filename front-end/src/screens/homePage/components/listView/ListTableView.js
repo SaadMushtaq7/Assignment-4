@@ -1,17 +1,12 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as R from "ramda";
 import {
   addStarFile,
   deleteStarFiles,
   setForkFiles,
-  setStarFiles,
-  userSetFiles,
 } from "../../../../redux/actions/filesActions";
-import {
-  fetchStarredGists,
-  fetchUserGists,
-} from "../../../../services/gistCRUD";
+
 import {
   starGist,
   unStarGist,
@@ -24,8 +19,7 @@ import "./homePageList.css";
 const ListTableView = ({ data }) => {
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.userProfile.user);
-  const starFiles = useSelector((state) => state.starfiles.files || []);
+  const starFiles = useSelector((state) => state.starfiles.files || []); //in rd action
   const forkFiles = useSelector((state) => state.forkfiles || []);
 
   const [clickedFile, setClickedFile] = useState(null);
@@ -34,22 +28,6 @@ const ListTableView = ({ data }) => {
   const [forkLoading, setForkLoading] = useState(false);
 
   let mapIndexed = R.addIndex(R.map);
-
-  const handleFetchUserGist = useCallback(async () => {
-    if (user) {
-      const res = await fetchUserGists(user.username);
-      if (res.status === 200) {
-        dispatch(userSetFiles(res.data));
-      }
-    }
-  }, [dispatch, user]);
-
-  const handleFetchStarredGist = useCallback(async () => {
-    const res = await fetchStarredGists();
-    if (res.status === 200) {
-      dispatch(setStarFiles(res.data));
-    }
-  }, [dispatch]);
 
   const handleStarGist = async (currentFile) => {
     setStarLoading(true);
@@ -113,11 +91,6 @@ const ListTableView = ({ data }) => {
       setForkLoading(false);
     }
   };
-
-  useEffect(() => {
-    handleFetchStarredGist();
-    handleFetchUserGist();
-  }, [handleFetchStarredGist, handleFetchUserGist]);
 
   return (
     <div className="home-page-list-container">

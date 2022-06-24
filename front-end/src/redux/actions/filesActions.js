@@ -92,3 +92,10 @@ export const setForkFiles = (files) => {
     payload: files,
   };
 };
+
+export const setPublicRawFiles = (files) => {
+  return {
+    type: ActionTypes.SET_PUBLIC_RAW_FILES,
+    payload: files,
+  };
+};
